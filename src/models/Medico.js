@@ -23,3 +23,13 @@ const MedicoSchema = new mongoose.Schema({
 });
 
 module.exports = mongoose.model("Medico", MedicoSchema);
+
+
+/*
+POST /MEDICOS
+{
+  "user": "ID_DO_USUARIO",
+  "crm": "123456-SP",
+  "especialidade": "Cardiologia"
+}
+*/

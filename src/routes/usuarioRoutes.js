@@ -3,7 +3,8 @@ const usuarioController = require("../controllers/usuarioControllers");
 
 const router = express.Router();
 
-router.post("/", usuarioController.create);
-router.get("/", usuarioController.index);
-
+router.post("/", usuarioController.create); // POST http://localhost:3000/usuarios
+router.get("/", usuarioController.index); // GET http://localhost:3000/usuarios
+router.put("/:id", usuarioController.put); // PUT http://localhost:3000/usuarios/id
+router.delete("/:id", usuarioController.destroy); // DELETE http://localhost:3000/usuarios/id
 module.exports = router;

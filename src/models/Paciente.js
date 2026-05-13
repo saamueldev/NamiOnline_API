@@ -12,4 +12,16 @@ const PacienteSchema = new mongoose.Schema({
         unique: true,
         trim: true,
     }
-})
+}, {
+    timestamps: true
+});
+
+module.exports = mongoose.model("Paciente", PacienteSchema);
+
+/*
+POST /PACIENTES
+{
+  "user": "ID_DO_USUARIO",
+  "prontuario": "PAC-001"
+}
+*/
