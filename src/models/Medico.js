@@ -1,11 +1,11 @@
 const mongoose = require("mongoose");
 
 const MedicoSchema = new mongoose.Schema({
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Usuario",
-    required: [true, "O médico deve estar vinculado a um usuário."],
+  name: {
+    type: String, 
+    required: [true, "O nome é obrigatório"],
   },
+
   crm: {
     type: String,
     required: [true, "O CRM é obrigatório."],
@@ -28,7 +28,7 @@ module.exports = mongoose.model("Medico", MedicoSchema);
 /*
 POST /MEDICOS
 {
-  "user": "ID_DO_USUARIO",
+  "name": "Jose",
   "crm": "123456-SP",
   "especialidade": "Cardiologia"
 }
