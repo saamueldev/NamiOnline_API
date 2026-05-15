@@ -2,17 +2,16 @@ const mongoose = require("mongoose");
 
 const tipoExameSchema = new mongoose.Schema(
   {
-    categoriaPrincipal: {
-      type: String,
+    categoriaExameId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "CategoriaExame",
       required: true,
-      trim: true,
     },
 
     nome: {
       type: String,
       required: true,
       trim: true,
-      unique: true,
     },
 
     descricao: {
@@ -20,15 +19,15 @@ const tipoExameSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-
-    quantidadeExames: {
-      type: Number,
-      default: 0,
-    },
   },
   {
     timestamps: true,
   }
+);
+
+tipoExameSchema.index(
+  { categoriaExameId: 1, nome: 1 },
+  { unique: true }
 );
 
 module.exports = mongoose.model("TipoExame", tipoExameSchema);
