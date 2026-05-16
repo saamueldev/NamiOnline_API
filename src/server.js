@@ -7,6 +7,8 @@ const connectDatabase = require("./config/database");
 const retornoRoutes = require("./routes/retornoRoutes");
 const notificacaoRoutes = require("./routes/notificacaoRoutes");
 const configuracaoRoutes = require("./routes/configuracaoRoutes");
+const authMiddleware = require("./middlewares/authMiddleware");
+const requireRole = require("./middlewares/roleMiddleware");
 
 const PORT = process.env.PORT || 3000;
 
@@ -15,11 +17,11 @@ app.use(require("cors")());
 app.use(require("express").json());
 
 // ROTAS DA API
-app.use("/retornos", retornoRoutes);
+app.use("/retornos", authMiddleware, requireRole("usuario"), retornoRoutes);
 
-app.use("/notificacoes", notificacaoRoutes);
+app.use("/notificacoes", authMiddleware, requireRole("usuario"), notificacaoRoutes);
 
-app.use("/configuracoes", configuracaoRoutes);
+app.use("/configuracoes", authMiddleware, requireRole("usuario"), configuracaoRoutes);
 
 // INICIAR SERVIDOR
 async function startServer() {
