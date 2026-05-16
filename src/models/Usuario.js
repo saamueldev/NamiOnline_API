@@ -8,6 +8,11 @@ const UserSchema = new mongoose.Schema({
   sexo: String,
   telefone: String,
   email: String,
+
+  //Hugo - Parte para função de redefinir e recuperar senha
+  resetPasswordToken: String,
+  resetPasswordExpires: Date,
+  
   tipo: {
     type: String,
     enum: ["usuario", "admin"],
