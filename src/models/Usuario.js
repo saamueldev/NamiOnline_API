@@ -7,7 +7,17 @@ const UserSchema = new mongoose.Schema({
   data_nasc: Date,
   sexo: String,
   telefone: String,
-  email: String
+  email: String,
+
+  //Hugo - Parte para função de redefinir e recuperar senha
+  resetPasswordToken: String,
+  resetPasswordExpires: Date,
+  
+  tipo: {
+    type: String,
+    enum: ["usuario", "admin"],
+    default: "usuario",
+  },
 }, { timestamps: true });
 
 module.exports = mongoose.model("Usuario", UserSchema);
