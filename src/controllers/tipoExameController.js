@@ -219,6 +219,7 @@ async function excluirTipoExame(req, res) {
   }
 }
 
+
 module.exports = {
   cadastrarTipoExame,
   listarTiposExame,

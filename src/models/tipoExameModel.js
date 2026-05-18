@@ -36,4 +36,5 @@ const tipoExameSchema = new mongoose.Schema(
   }
 );
 
+
 module.exports = mongoose.model("TipoExame", tipoExameSchema);

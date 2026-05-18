@@ -37,4 +37,5 @@ router.delete(
   excluirCategoriaExame
 );
 
+
 module.exports = router;

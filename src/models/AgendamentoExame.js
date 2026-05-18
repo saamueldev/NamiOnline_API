@@ -54,4 +54,5 @@ const agendamentoExameSchema = new mongoose.Schema(
   }
 );
 
+
 module.exports = mongoose.model("AgendamentoExame", agendamentoExameSchema);

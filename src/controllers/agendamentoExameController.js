@@ -5,6 +5,7 @@ const INICIO_FUNCIONAMENTO = "07:30";
 const FIM_FUNCIONAMENTO = "17:30";
 const MARGEM_AGENDAMENTO_MINUTOS = 30;
 
+
 function converterHorarioParaMinutos(horario) {
   const [horas, minutos] = horario.split(":").map(Number);
   return horas * 60 + minutos;

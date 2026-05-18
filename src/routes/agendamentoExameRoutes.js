@@ -33,4 +33,5 @@ router.get("/", authMiddleware, listarTodosAgendamentosExame);
 
 router.patch("/:id/cancelar", authMiddleware, cancelarAgendamentoExame);
 
+
 module.exports = router;
