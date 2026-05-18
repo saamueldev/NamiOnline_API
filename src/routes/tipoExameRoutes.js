@@ -8,12 +8,34 @@ const {
   excluirTipoExame,
 } = require("../controllers/tipoExameController");
 
+const authMiddleware = require("../middlewares/authMiddleware");
+const requireRole = require("../middlewares/roleMiddleware");
+
 const router = express.Router();
 
-router.post("/", cadastrarTipoExame);
 router.get("/", listarTiposExame);
 router.get("/:id", buscarTipoExamePorId);
-router.put("/:id", atualizarTipoExame);
-router.delete("/:id", excluirTipoExame);
+
+router.post(
+  "/",
+  authMiddleware,
+  requireRole("admin"),
+  cadastrarTipoExame
+);
+
+router.put(
+  "/:id",
+  authMiddleware,
+  requireRole("admin"),
+  atualizarTipoExame
+);
+
+router.delete(
+  "/:id",
+  authMiddleware,
+  requireRole("admin"),
+  excluirTipoExame
+);
+
 
 module.exports = router;

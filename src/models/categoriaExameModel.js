@@ -20,4 +20,5 @@ const categoriaExameSchema = new mongoose.Schema(
   }
 );
 
+
 module.exports = mongoose.model("CategoriaExame", categoriaExameSchema);

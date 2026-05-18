@@ -1,13 +1,44 @@
 const TipoExame = require("../models/tipoExameModel");
 const CategoriaExame = require("../models/categoriaExameModel");
 
+function normalizarGuiaNecessaria(valor) {
+  if (valor === true || valor === "true") {
+    return true;
+  }
+
+  if (valor === false || valor === "false") {
+    return false;
+  }
+
+  return false;
+}
+
+function normalizarTempoMedioMinutos(valor) {
+  const tempo = Number(valor);
+
+  if (!Number.isInteger(tempo) || tempo < 5) {
+    return null;
+  }
+
+  return tempo;
+}
+
 async function cadastrarTipoExame(req, res) {
   try {
-    const { categoriaExameId, nome, descricao } = req.body;
+    const {
+      categoriaExameId,
+      nome,
+      descricao,
+      tempoMedioMinutos,
+      guiaNecessaria,
+    } = req.body;
 
-    if (!categoriaExameId || !nome || !descricao) {
+    const tempoNormalizado = normalizarTempoMedioMinutos(tempoMedioMinutos);
+
+    if (!categoriaExameId || !nome || !descricao || !tempoNormalizado) {
       return res.status(400).json({
-        mensagem: "Categoria, nome e descrição são obrigatórios.",
+        mensagem:
+          "Categoria, nome, descrição e tempo médio do exame são obrigatórios.",
       });
     }
 
@@ -19,12 +50,12 @@ async function cadastrarTipoExame(req, res) {
       });
     }
 
-    const tipoExistente = await TipoExame.findOne({
-      categoriaExameId,
+    const tipoExameExistente = await TipoExame.findOne({
       nome: nome.trim(),
+      categoriaExameId,
     });
 
-    if (tipoExistente) {
+    if (tipoExameExistente) {
       return res.status(409).json({
         mensagem: "Já existe um tipo de exame com esse nome nesta categoria.",
       });
@@ -34,14 +65,11 @@ async function cadastrarTipoExame(req, res) {
       categoriaExameId,
       nome: nome.trim(),
       descricao: descricao.trim(),
+      tempoMedioMinutos: tempoNormalizado,
+      guiaNecessaria: normalizarGuiaNecessaria(guiaNecessaria),
     });
 
-    const tipoComCategoria = await TipoExame.findById(novoTipoExame._id).populate(
-      "categoriaExameId",
-      "nome descricao"
-    );
-
-    return res.status(201).json(tipoComCategoria);
+    return res.status(201).json(novoTipoExame);
   } catch (error) {
     return res.status(500).json({
       mensagem: "Erro ao cadastrar tipo de exame.",
@@ -52,12 +80,10 @@ async function cadastrarTipoExame(req, res) {
 
 async function listarTiposExame(req, res) {
   try {
-    const { categoriaExameId } = req.query;
-
     const filtro = {};
 
-    if (categoriaExameId) {
-      filtro.categoriaExameId = categoriaExameId;
+    if (req.query.categoriaExameId) {
+      filtro.categoriaExameId = req.query.categoriaExameId;
     }
 
     const tiposExame = await TipoExame.find(filtro)
@@ -100,11 +126,21 @@ async function buscarTipoExamePorId(req, res) {
 async function atualizarTipoExame(req, res) {
   try {
     const { id } = req.params;
-    const { categoriaExameId, nome, descricao } = req.body;
 
-    if (!categoriaExameId || !nome || !descricao) {
+    const {
+      categoriaExameId,
+      nome,
+      descricao,
+      tempoMedioMinutos,
+      guiaNecessaria,
+    } = req.body;
+
+    const tempoNormalizado = normalizarTempoMedioMinutos(tempoMedioMinutos);
+
+    if (!categoriaExameId || !nome || !descricao || !tempoNormalizado) {
       return res.status(400).json({
-        mensagem: "Categoria, nome e descrição são obrigatórios.",
+        mensagem:
+          "Categoria, nome, descrição e tempo médio do exame são obrigatórios.",
       });
     }
 
@@ -125,8 +161,8 @@ async function atualizarTipoExame(req, res) {
     }
 
     const tipoComMesmoNome = await TipoExame.findOne({
-      categoriaExameId,
       nome: nome.trim(),
+      categoriaExameId,
       _id: { $ne: id },
     });
 
@@ -139,6 +175,8 @@ async function atualizarTipoExame(req, res) {
     tipoExame.categoriaExameId = categoriaExameId;
     tipoExame.nome = nome.trim();
     tipoExame.descricao = descricao.trim();
+    tipoExame.tempoMedioMinutos = tempoNormalizado;
+    tipoExame.guiaNecessaria = normalizarGuiaNecessaria(guiaNecessaria);
 
     await tipoExame.save();
 
@@ -180,6 +218,7 @@ async function excluirTipoExame(req, res) {
     });
   }
 }
+
 
 module.exports = {
   cadastrarTipoExame,
