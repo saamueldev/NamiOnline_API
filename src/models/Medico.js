@@ -2,34 +2,34 @@ const mongoose = require("mongoose");
 
 const MedicoSchema = new mongoose.Schema({
   name: {
-    type: String, 
-    required: [true, "O nome é obrigatório"],
+    type: String,
+    required: [true, "O nome e obrigatorio"],
+    trim: true,
+  },
+
+  especialidadeId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Especialidade",
+    required: [true, "A especialidade e obrigatoria"],
   },
 
   crm: {
     type: String,
-    required: [true, "O CRM é obrigatório."],
+    required: [true, "O CRM e obrigatorio."],
     unique: true,
     trim: true,
-
   },
-  especialidade: {
-    type: String,
-    required: [true, "A especialidade é obrigatória."],
-    trim: true,
-  }
-}, { 
-  timestamps: true 
+}, {
+  timestamps: true,
 });
 
 module.exports = mongoose.model("Medico", MedicoSchema);
-
 
 /*
 POST /MEDICOS
 {
   "name": "Jose",
   "crm": "123456-SP",
-  "especialidade": "Cardiologia"
+  "especialidadeId": "ID_DA_ESPECIALIDADE"
 }
 */

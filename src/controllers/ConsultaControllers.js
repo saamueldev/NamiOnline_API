@@ -1,4 +1,5 @@
 const ConsultaService = require("../services/ConsultaService");
+const Paciente = require("../models/Paciente");
 
 class ConsultaController {
 
@@ -14,8 +15,29 @@ class ConsultaController {
         tipo
       } = req.body;
 
+      let pacienteConsultaId = pacienteId;
+
+      if (!pacienteConsultaId && req.user?.id) {
+        let paciente = await Paciente.findOne({ user: req.user.id });
+
+        if (!paciente) {
+          paciente = await Paciente.create({
+            user: req.user.id,
+            prontuario: `PAC-${req.user.id.slice(-6).toUpperCase()}-${Date.now().toString().slice(-6)}`
+          });
+        }
+
+        pacienteConsultaId = paciente?._id;
+      }
+
+      if (!pacienteConsultaId) {
+        return res.status(400).json({
+          error: "Paciente nao encontrado para o usuario logado."
+        });
+      }
+
       const consulta = await ConsultaService.create({
-        pacienteId,
+        pacienteId: pacienteConsultaId,
         medicoId,
         especialidadeId,
         guiaId,

@@ -24,10 +24,14 @@ async function authMiddleware(req, res, next) {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const usuario = await Usuario.findById(decoded.sub).select("_id email tipo");
+
+    const usuario = await Usuario.findById(decoded.sub)
+      .select("_id email tipo");
 
     if (!usuario) {
-      return res.status(401).json({ error: "Usuario do token nao encontrado" });
+      return res.status(401).json({
+        error: "Usuario do token nao encontrado"
+      });
     }
 
     req.user = {
@@ -37,8 +41,13 @@ async function authMiddleware(req, res, next) {
     };
 
     return next();
+
   } catch (error) {
-    return res.status(401).json({ error: "Token invalido ou expirado" });
+
+    return res.status(401).json({
+      error: "Token invalido ou expirado"
+    });
+
   }
 }
 

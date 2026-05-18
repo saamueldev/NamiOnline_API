@@ -5,7 +5,7 @@ async function createEspecialidade(data) {
 }
 
 async function listEspecialidades() {
-  return Especialidade.find();
+  return Especialidade.find().sort({ name: 1 });
 }
 
 module.exports = {

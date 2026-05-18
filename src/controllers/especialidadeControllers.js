@@ -3,7 +3,7 @@ const especialidadeService = require("../services/especialidadeService");
 class EspecialidadeController {
   async create(req, res) {
     try {
-      const { name, requerGuia } = req.body;
+      const { name, requerGuia, duracaoConsulta } = req.body;
 
       if (!name) {
         return res.status(400).json({
@@ -11,9 +11,16 @@ class EspecialidadeController {
         });
       }
 
+      if (!duracaoConsulta) {
+        return res.status(400).json({
+          mensagem: "Duração da consulta é obrigatória."
+        });
+      }
+
       const especialidade = await especialidadeService.createEspecialidade({
         name,
-        requerGuia: requerGuia || false
+        requerGuia: requerGuia || false,
+        duracaoConsulta
       });
 
       return res.status(201).json({
@@ -32,6 +39,7 @@ class EspecialidadeController {
   async index(req, res) {
     try {
       const especialidades = await especialidadeService.listEspecialidades();
+
       return res.status(200).json(especialidades);
 
     } catch (error) {
