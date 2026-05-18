@@ -8,12 +8,34 @@ const {
   excluirCategoriaExame,
 } = require("../controllers/categoriaExameController");
 
+const authMiddleware = require("../middlewares/authMiddleware");
+const requireRole = require("../middlewares/roleMiddleware");
+
 const router = express.Router();
 
-router.post("/", cadastrarCategoriaExame);
 router.get("/", listarCategoriasExame);
 router.get("/:id", buscarCategoriaExamePorId);
-router.put("/:id", atualizarCategoriaExame);
-router.delete("/:id", excluirCategoriaExame);
+
+router.post(
+  "/",
+  authMiddleware,
+  requireRole("admin"),
+  cadastrarCategoriaExame
+);
+
+router.put(
+  "/:id",
+  authMiddleware,
+  requireRole("admin"),
+  atualizarCategoriaExame
+);
+
+router.delete(
+  "/:id",
+  authMiddleware,
+  requireRole("admin"),
+  excluirCategoriaExame
+);
+
 
 module.exports = router;
