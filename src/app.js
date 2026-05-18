@@ -8,9 +8,9 @@ const categoriaExameRoutes = require("./routes/categoriaExameRoutes");
 const tipoExameRoutes = require("./routes/tipoExameRoutes");
 const agendamentoExameRoutes = require("./routes/agendamentoExameRoutes");
 const retornoRoutes = require("./routes/retornoRoutes");
-const avatarRoutes = require("./routes/Avatarroutes");
 const notificacaoRoutes = require("./routes/notificacaoRoutes");
 const configuracaoRoutes = require("./routes/configuracaoRoutes");
+const avatarRoutes = require("./routes/Avatarroutes");
 const guiaRoutes = require("./routes/guiaRoutes");
 const especialidadeRoutes = require("./routes/especialidadeRoutes");
 const consultaRoutes = require("./routes/consultaRoutes");
@@ -36,9 +36,9 @@ app.use("/tipos-exames", tipoExameRoutes);
 app.use("/agendamentos-exames", agendamentoExameRoutes);
 app.use("/retornos", retornoRoutes);
 
-app.use("/configuracoes/avatar", avatarRoutes);
-app.use("/configuracoes", configuracaoRoutes);
 app.use("/notificacoes", notificacaoRoutes);
+app.use("/configuracoes", configuracaoRoutes);
+app.use("/configuracoes/avatar", avatarRoutes);
 
 app.use("/guias", guiaRoutes);
 app.use("/especialidades", especialidadeRoutes);
@@ -48,5 +48,6 @@ app.use("/meus-agendamentos", meusAgendamentosRoutes);
 
 app.use("/horarios-fixos", horariosFixosRoutes);
 app.use("/agenda-bloqueios", agendaBloqueioRoutes);
+app.use("/agendas-medicos", agendaMedicoRoutes);
 
 module.exports = app;
