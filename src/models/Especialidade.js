@@ -9,6 +9,11 @@ const EspecialidadeSchema = new mongoose.Schema({
   requerGuia: {
     type: Boolean,
     default: false
+  },
+
+  duracaoConsulta: {
+    type: Number,
+    required: true
   }
 });
 

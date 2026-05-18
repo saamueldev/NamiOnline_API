@@ -1,4 +1,5 @@
 const Usuario = require("../models/Usuario");
+const Paciente = require("../models/Paciente");
 const bcrypt = require("bcryptjs");
 
 const SALT_ROUNDS = 10;
@@ -26,7 +27,18 @@ async function createUsuarios(data) {
     tipo: "usuario",
   };
 
-  return Usuario.create(usuarioData);
+  const usuario = await Usuario.create(usuarioData);
+
+  await Paciente.create({
+    user: usuario._id,
+    prontuario: gerarProntuario(usuario._id),
+  });
+
+  return usuario;
+}
+
+function gerarProntuario(usuarioId) {
+  return `PAC-${usuarioId.toString().slice(-6).toUpperCase()}-${Date.now().toString().slice(-6)}`;
 }
 
 async function listUsuarios() {

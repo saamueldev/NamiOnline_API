@@ -1,10 +1,8 @@
-const Agendamento = require("../models/Consulta");
+const Consulta = require("../models/Consulta");
 
 class ConsultaService {
-
   async create(dados) {
     const novaConsulta = await Consulta.create(dados);
-
     return novaConsulta;
   }
 
@@ -26,7 +24,6 @@ class ConsultaService {
     }
 
     consulta.status = status;
-
     await consulta.save();
 
     return consulta;
@@ -43,7 +40,6 @@ class ConsultaService {
 
     return true;
   }
-
 }
 
 module.exports = new ConsultaService();
