@@ -48,6 +48,5 @@ app.use("/meus-agendamentos", meusAgendamentosRoutes);
 
 app.use("/horarios-fixos", horariosFixosRoutes);
 app.use("/agenda-bloqueios", agendaBloqueioRoutes);
-app.use("/agendas-medicos", agendaMedicoRoutes);
 
 module.exports = app;
