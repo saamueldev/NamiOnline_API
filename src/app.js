@@ -11,6 +11,10 @@ const categoriaExameRoutes = require("./routes/categoriaExameRoutes");
 const tipoExameRoutes = require("./routes/tipoExameRoutes");
 const authMiddleware = require("./middlewares/authMiddleware");
 const requireRole = require("./middlewares/roleMiddleware");
+const retornoRoutes = require("./routes/retornoRoutes");
+const notificacaoRoutes = require("./routes/notificacaoRoutes");
+const configuracaoRoutes = require("./routes/configuracaoRoutes");
+const chatRoutes = require("./routes/chatRoutes");
 
 // ======================
 // NOVAS ROTAS
@@ -36,15 +40,19 @@ app.use("/pacientes", authMiddleware, requireRole("admin"), pacienteRoutes);
 app.use("/categorias-exames", authMiddleware, requireRole("admin"), categoriaExameRoutes);
 app.use("/tipos-exames", authMiddleware, requireRole("admin"), tipoExameRoutes);
 
-<<<<<<< HEAD
+
 module.exports = app;
-=======
 // ======================
 // ROTAS CONFIGURAÇÕES
 // ======================
 app.use("/configuracoes", avatarRoutes);
 app.use("/configuracoes", notificacaoRoutes);
 app.use("/configuracoes", configuracaoRoutes);
+app.use("/retornos", retornoRoutes);
+app.use("/notificacoes", notificacaoRoutes);
+app.use("/configuracoes", configuracaoRoutes);
+app.use("/chat", chatRoutes);
+
 
 // ======================
 // TESTE API
@@ -54,4 +62,3 @@ app.get("/", (req, res) => {
 });
 
 module.exports = app;
->>>>>>> c7b8e3a (backend funcionando)
