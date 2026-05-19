@@ -149,6 +149,7 @@ async function excluirCategoriaExame(req, res) {
   }
 }
 
+
 module.exports = {
   cadastrarCategoriaExame,
   listarCategoriasExame,

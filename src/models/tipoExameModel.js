@@ -19,15 +19,22 @@ const tipoExameSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+
+    tempoMedioMinutos: {
+      type: Number,
+      required: true,
+      min: 5,
+    },
+
+    guiaNecessaria: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,
   }
 );
 
-tipoExameSchema.index(
-  { categoriaExameId: 1, nome: 1 },
-  { unique: true }
-);
 
 module.exports = mongoose.model("TipoExame", tipoExameSchema);

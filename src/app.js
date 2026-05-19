@@ -37,8 +37,6 @@ app.use("/retornos", retornoRoutes);
 
 app.use("/notificacoes", notificacaoRoutes);
 app.use("/configuracoes", configuracaoRoutes);
-app.use("/configuracoes/avatar", avatarRoutes);
-
 app.use("/guias", guiaRoutes);
 app.use("/especialidades", especialidadeRoutes);
 
@@ -47,6 +45,5 @@ app.use("/meus-agendamentos", meusAgendamentosRoutes);
 
 app.use("/horarios-fixos", horariosFixosRoutes);
 app.use("/agenda-bloqueios", agendaBloqueioRoutes);
-app.use("/agendas-medicos", agendaMedicoRoutes);
 
 module.exports = app;
