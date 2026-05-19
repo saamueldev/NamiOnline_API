@@ -1,5 +1,6 @@
 const AgendamentoExame = require("../models/AgendamentoExame");
 const TipoExame = require("../models/tipoExameModel");
+const Usuario = require("../models/Usuario");
 
 const INICIO_FUNCIONAMENTO = "07:30";
 const FIM_FUNCIONAMENTO = "17:30";
@@ -464,8 +465,127 @@ async function cancelarAgendamentoExame(req, res) {
   }
 }
 
+async function cadastrarAgendamentoExameAdmin(req, res) {
+  try {
+    if (req.user.tipo !== "admin") {
+      return res.status(403).json({
+        mensagem: "Acesso negado.",
+      });
+    }
+
+    const {
+      usuarioId,
+      tipoExameId,
+      data,
+      horario,
+      tipoAtendimento,
+      observacoes,
+      guiaArquivoNome,
+    } = req.body;
+
+    if (!usuarioId || !tipoExameId || !data || !horario || !tipoAtendimento) {
+      return res.status(400).json({
+        mensagem:
+          "Paciente, tipo de exame, data, horário e tipo de atendimento são obrigatórios.",
+      });
+    }
+
+    const paciente = await Usuario.findById(usuarioId);
+
+    if (!paciente) {
+      return res.status(404).json({
+        mensagem: "Paciente não encontrado.",
+      });
+    }
+
+    if (paciente.tipo !== "usuario") {
+      return res.status(400).json({
+        mensagem: "O usuário informado não é um paciente.",
+      });
+    }
+
+    const tipoExame = await TipoExame.findById(tipoExameId);
+
+    if (!tipoExame) {
+      return res.status(404).json({
+        mensagem: "Tipo de exame não encontrado.",
+      });
+    }
+
+    if (!tipoExame.tempoMedioMinutos) {
+      return res.status(400).json({
+        mensagem: "Tempo médio do exame não informado.",
+      });
+    }
+
+    if (tipoExame.guiaNecessaria && !guiaArquivoNome) {
+      return res.status(400).json({
+        mensagem: "Este exame exige guia médica. Anexe a guia para continuar.",
+      });
+    }
+
+    const horariosPossiveis = gerarHorariosPossiveis(
+      tipoExame.tempoMedioMinutos
+    );
+
+    const { horariosFiltrados } = filtrarHorariosPassadosDoDia(
+      horariosPossiveis,
+      data
+    );
+
+    if (!horariosFiltrados.includes(horario)) {
+      return res.status(400).json({
+        mensagem:
+          "Horário inválido ou indisponível para este exame. Escolha um horário disponível.",
+      });
+    }
+
+    const horariosOcupados = await buscarHorariosOcupados(tipoExameId, data);
+
+    if (horariosOcupados.includes(horario)) {
+      return res.status(409).json({
+        mensagem: "Este horário já está reservado para este exame.",
+      });
+    }
+
+    const novoAgendamento = await AgendamentoExame.create({
+      usuarioId,
+      tipoExameId,
+      data: new Date(`${data}T00:00:00.000Z`),
+      horario,
+      tipoAtendimento,
+      observacoes: observacoes || "",
+      guiaArquivoNome: guiaArquivoNome || "",
+      status: "pendente",
+    });
+
+    const agendamentoPopulado = await AgendamentoExame.findById(
+      novoAgendamento._id
+    )
+      .populate("usuarioId", "name email cpf telefone data_nasc sexo")
+      .populate({
+        path: "tipoExameId",
+        populate: {
+          path: "categoriaExameId",
+          select: "nome descricao",
+        },
+      });
+
+    return res.status(201).json({
+      mensagem: "Agendamento de exame criado com sucesso pelo funcionário.",
+      agendamento: agendamentoPopulado,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      mensagem: "Erro ao cadastrar agendamento de exame pelo funcionário.",
+      erro: error.message,
+    });
+  }
+}
+
 module.exports = {
   cadastrarAgendamentoExame,
+  cadastrarAgendamentoExameAdmin,
   listarHorariosDisponiveis,
   listarDisponibilidadeMensal,
   listarMeusAgendamentosExame,
