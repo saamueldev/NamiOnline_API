@@ -22,6 +22,7 @@ const eventosRoutes = require("./routes/eventosRoutes");
 
 const authMiddleware = require("./middlewares/authMiddleware");
 const requireRole = require("./middlewares/roleMiddleware");
+const chatRoutes = require("./routes/chatRoutes");
 
 const app = express();
 

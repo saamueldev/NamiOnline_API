@@ -1,40 +1,42 @@
-const retornos = [];
+const Retorno = require("../models/Retorno");
 
-exports.listarRetornos = (req, res) => {
-  res.json(retornos);
-};
-
-exports.criarRetorno = (req, res) => {
-  const novoRetorno = {
-    id: Date.now(),
-    medico: req.body.medico,
-    especialidade: req.body.especialidade,
-    data: req.body.data,
-    horario: req.body.horario,
-  };
-
-  retornos.push(novoRetorno);
-
-  res.status(201).json({
-    mensagem: "Retorno agendado com sucesso",
-    retorno: novoRetorno,
-  });
-};
-
-exports.deletarRetorno = (req, res) => {
-  const id = Number(req.params.id);
-
-  const index = retornos.findIndex(r => r.id === id);
-
-  if (index === -1) {
-    return res.status(404).json({
-      mensagem: "Retorno não encontrado",
-    });
+// LISTAR
+async function listarRetornos(req, res) {
+  try {
+    const retornos = await Retorno.find();
+    return res.json(retornos);
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
   }
+}
 
-  retornos.splice(index, 1);
+// CRIAR
+async function criarRetorno(req, res) {
+  try {
+    const retorno = await Retorno.create(req.body);
+    return res.status(201).json(retorno);
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+}
 
-  res.json({
-    mensagem: "Retorno removido",
-  });
+// DELETAR
+async function deletarRetorno(req, res) {
+  try {
+    const retorno = await Retorno.findByIdAndDelete(req.params.id);
+
+    if (!retorno) {
+      return res.status(404).json({ error: "Retorno não encontrado" });
+    }
+
+    return res.json({ message: "Deletado com sucesso" });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+}
+
+module.exports = {
+  listarRetornos,
+  criarRetorno,
+  deletarRetorno,
 };

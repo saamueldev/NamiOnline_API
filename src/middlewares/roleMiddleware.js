@@ -11,7 +11,7 @@ function requireRole(...allowedRoles) {
     }
 
     return next();
-  };
+  }
 }
 
 module.exports = requireRole;

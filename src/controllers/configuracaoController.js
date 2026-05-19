@@ -1,26 +1,44 @@
-let configuracoes = {
-  tema: "claro",
-  notificacoes: true,
+const Configuracao = require("../models/Configuracao");
+
+// buscar config
+exports.buscarConfiguracoes = async (req, res) => {
+  try {
+    const config = await Configuracao.findOne();
+
+    if (!config) {
+      const novaConfig = await Configuracao.create({});
+      return res.json(novaConfig);
+    }
+
+    res.json(config);
+  } catch (error) {
+    res.status(500).json({
+      mensagem: "Erro ao buscar configurações",
+      erro: error.message,
+    });
+  }
 };
 
-exports.buscarConfiguracoes = (req, res) => {
-  res.json(configuracoes);
-};
+// salvar tema
+exports.salvarTema = async (req, res) => {
+  try {
+    const { tema } = req.body;
 
-exports.salvarTema = (req, res) => {
-  configuracoes.tema = req.body.tema;
+    const config = await Configuracao.findOneAndUpdate(
+      {},
+      { tema },
+      { new: true, upsert: true }
+    );
 
-  res.json({
-    mensagem: "Tema atualizado",
-    configuracoes,
-  });
-};
-
-exports.alterarNotificacoes = (req, res) => {
-  configuracoes.notificacoes = req.body.notificacoes;
-
-  res.json({
-    mensagem: "Configuração alterada",
-    configuracoes,
-  });
+    res.json({
+      sucesso: true,
+      mensagem: "Tema salvo com sucesso",
+      configuracoes: config,
+    });
+  } catch (error) {
+    res.status(500).json({
+      mensagem: "Erro ao salvar tema",
+      erro: error.message,
+    });
+  }
 };

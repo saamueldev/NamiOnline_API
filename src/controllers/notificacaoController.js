@@ -1,39 +1,125 @@
-const notificacoes = [];
+const Notificacao = require(
+  "../models/Notificacao"
+);
 
-exports.listarNotificacoes = (req, res) => {
-  res.json(notificacoes);
-};
+// ========================================
+// CRIAR
+// ========================================
+exports.criarNotificacao =
+  async (req, res) => {
+    try {
+      console.log(
+        "BODY:",
+        req.body
+      );
 
-exports.criarNotificacao = (req, res) => {
-  const novaNotificacao = {
-    id: Date.now(),
-    titulo: req.body.titulo,
-    mensagem: req.body.mensagem,
-    lida: false,
+      const notificacao =
+        await Notificacao.create({
+          usuarioId:
+            req.body.usuarioId,
+
+          titulo:
+            req.body.titulo,
+
+          mensagem:
+            req.body.mensagem,
+
+          tipo: req.body.tipo,
+
+          rota: req.body.rota,
+
+          lida:
+            req.body.lida || false,
+        });
+
+      console.log(
+        "NOTIFICAÇÃO SALVA:",
+        notificacao
+      );
+
+      res.status(201).json(
+        notificacao
+      );
+    } catch (error) {
+      console.log(
+        "ERRO NOTIFICAÇÃO:",
+        error
+      );
+
+      res.status(500).json({
+        erro:
+          "Erro ao criar notificação",
+        detalhes: error.message,
+      });
+    }
   };
 
-  notificacoes.push(novaNotificacao);
+// ========================================
+// LISTAR
+// ========================================
+exports.buscarNotificacoes =
+  async (req, res) => {
+    try {
+      const { usuarioId } =
+        req.query;
 
-  res.status(201).json({
-    mensagem: "Notificação criada",
-    notificacao: novaNotificacao,
-  });
-};
+      const notificacoes =
+        await Notificacao.find({
+          usuarioId,
+        }).sort({
+          createdAt: -1,
+        });
 
-exports.marcarComoLida = (req, res) => {
-  const id = Number(req.params.id);
+      res.json(notificacoes);
+    } catch (error) {
+      res.status(500).json({
+        erro:
+          "Erro ao buscar notificações",
+      });
+    }
+  };
 
-  const notificacao = notificacoes.find(n => n.id === id);
+// ========================================
+// MARCAR COMO LIDA
+// ========================================
+exports.marcarComoLida =
+  async (req, res) => {
+    try {
+      const notificacao =
+        await Notificacao.findByIdAndUpdate(
+          req.params.id,
+          {
+            lida: true,
+          },
+          { new: true }
+        );
 
-  if (!notificacao) {
-    return res.status(404).json({
-      mensagem: "Notificação não encontrada",
-    });
-  }
+      res.json(notificacao);
+    } catch (error) {
+      res.status(500).json({
+        erro:
+          "Erro ao atualizar notificação",
+      });
+    }
+  };
 
-  notificacao.lida = true;
+// ========================================
+// DELETAR
+// ========================================
+exports.deletarNotificacao =
+  async (req, res) => {
+    try {
+      await Notificacao.findByIdAndDelete(
+        req.params.id
+      );
 
-  res.json({
-    mensagem: "Notificação marcada como lida",
-  });
-};
+      res.json({
+        sucesso: true,
+      });
+    } catch (error) {
+      res.status(500).json({
+        erro:
+          "Erro ao deletar notificação",
+      });
+    }
+  };

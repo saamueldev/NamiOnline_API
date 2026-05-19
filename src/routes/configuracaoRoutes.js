@@ -1,19 +1,13 @@
-const express = require("express")
+const express = require("express");
+const router = express.Router();
 
-const router = express.Router()
+const configuracaoController = require("../controllers/configuracaoController");
 
-router.post("/tema", (req, res) => {
+// buscar config
+router.get("/", configuracaoController.buscarConfiguracoes);
 
-  const { tema } = req.body
+// salvar tema
+router.post("/tema", configuracaoController.salvarTema);
 
- 
+module.exports = router;
 
-  res.json({
-    sucesso: true,
-    mensagem: "Tema salvo",
-    tema,
-  })
-
-})
-
-module.exports = router

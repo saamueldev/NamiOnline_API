@@ -1,18 +1,26 @@
-const express = require("express")
+const express = require("express");
 
-const router = express.Router()
+const router = express.Router();
 
-router.post("/notificacoes", (req, res) => {
+const {
+  criarNotificacao,
+  buscarNotificacoes,
+  marcarComoLida,
+  deletarNotificacao,
+} = require("../controllers/notificacaoController");
 
-  const { notificacoes } = req.body
+router.post("/", criarNotificacao);
 
-  console.log("Notificações:", notificacoes)
+router.get("/", buscarNotificacoes);
 
-  res.json({
-    sucesso: true,
-    mensagem: "Configuração salva",
-  })
+router.patch(
+  "/:id/lida",
+  marcarComoLida
+);
 
-})
+router.delete(
+  "/:id",
+  deletarNotificacao
+);
 
-module.exports = router
+module.exports = router;
