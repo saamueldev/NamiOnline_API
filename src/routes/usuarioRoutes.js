@@ -1,6 +1,7 @@
 const express = require("express");
 const usuarioController = require("../controllers/usuarioControllers");
 const authMiddleware = require("../middlewares/authMiddleware");
+const requireRole = require("../middlewares/roleMiddleware");
 
 const router = express.Router();
 
@@ -10,6 +11,9 @@ router.post("/login", usuarioController.login); // POST http://localhost:3000/us
 //Hugo - Duas novas rotas para redefinir e recuperar senha (Precisa vir antes dos auth para não ser interpretado como ID)
 router.post("/recuperar-senha", usuarioController.recuperarSenha); // POST http://localhost:3000/usuarios/recuperar-senha
 router.put("/redefinir-senha/:token", usuarioController.redefinirSenha); // PUT http://localhost:3000/usuarios/redefinir-senha
+
+//Hugo - Nova rota para buscar usuário por CPF (Precisa vir antes dos auth para não ser interpretado como ID)
+router.get("/buscar-cpf/:cpf",authMiddleware,requireRole("admin"),usuarioController.buscarUsuarioPorCpf);
 
 router.get("/me", authMiddleware, usuarioController.me); // GET http://localhost:3000/usuarios/me
 router.get("/", authMiddleware, usuarioController.index); // GET http://localhost:3000/usuarios
