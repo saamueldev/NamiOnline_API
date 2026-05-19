@@ -16,6 +16,8 @@ const consultaRoutes = require("./routes/consultaRoutes");
 const meusAgendamentosRoutes = require("./routes/meusAgendamentosRoutes");
 const agendaBloqueioRoutes = require("./routes/agendaBloqueioRoutes");
 const horariosFixosRoutes = require("./routes/horariosFixosRoutes");
+const noticiasRoutes = require("./routes/noticiasRoutes");
+const eventosRoutes = require("./routes/eventosRoutes");
 
 const authMiddleware = require("./middlewares/authMiddleware");
 const requireRole = require("./middlewares/roleMiddleware");
@@ -23,7 +25,8 @@ const requireRole = require("./middlewares/roleMiddleware");
 const app = express();
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: "15mb" }));
+app.use(express.urlencoded({ extended: true, limit: "15mb" }));
 
 app.use("/usuarios", userRoutes);
 
@@ -45,5 +48,7 @@ app.use("/meus-agendamentos", meusAgendamentosRoutes);
 
 app.use("/horarios-fixos", horariosFixosRoutes);
 app.use("/agenda-bloqueios", agendaBloqueioRoutes);
+app.use("/noticias", noticiasRoutes);
+app.use("/eventos", eventosRoutes);
 
 module.exports = app;
