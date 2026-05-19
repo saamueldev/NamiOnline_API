@@ -277,6 +277,43 @@ async function redefinirSenha(req, res) {
   }
 }
 
+//Hugo - Função para buscar usuário por CPF
+
+async function buscarUsuarioPorCpf(req, res) {
+  try {
+    const { cpf } = req.params;
+
+    if (!cpf) {
+      return res.status(400).json({
+        error: "CPF não informado.",
+      });
+    }
+
+    const cpfLimpo = cpf.replace(/\D/g, "");
+
+    const usuario = await Usuario.findOne({ cpf: cpfLimpo });
+
+    if (!usuario) {
+      return res.status(404).json({
+        error: "Paciente não encontrado.",
+      });
+    }
+
+    if (usuario.tipo !== "usuario") {
+      return res.status(400).json({
+        error: "O CPF informado não pertence a um paciente.",
+      });
+    }
+
+    return res.status(200).json(esconderSenha(usuario));
+  } catch (error) {
+    return res.status(500).json({
+      error: "Erro ao buscar paciente por CPF.",
+      details: error.message,
+    });
+  }
+}
+
 module.exports = {
   create,
   index,
@@ -287,4 +324,6 @@ module.exports = {
   //Hugo - Export das duas funções Recuperar Senha e Redefinir Senha
   recuperarSenha,
   redefinirSenha,
+  //Hugo - Export da função de buscar usuário por CPF
+  buscarUsuarioPorCpf,
 };
