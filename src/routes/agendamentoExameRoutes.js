@@ -8,6 +8,7 @@ const {
   listarMeusAgendamentosExame,
   listarTodosAgendamentosExame,
   cancelarAgendamentoExame,
+  atualizarAgendamentoExame,
 } = require("../controllers/agendamentoExameController");
 
 const authMiddleware = require("../middlewares/authMiddleware");
@@ -41,5 +42,7 @@ router.get("/meus", authMiddleware, listarMeusAgendamentosExame);
 router.get("/", authMiddleware, listarTodosAgendamentosExame);
 
 router.patch("/:id/cancelar", authMiddleware, cancelarAgendamentoExame);
+
+router.patch("/:id", authMiddleware, requireRole("admin"), atualizarAgendamentoExame);
 
 module.exports = router;

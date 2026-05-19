@@ -1,5 +1,6 @@
 const TipoExame = require("../models/tipoExameModel");
 const CategoriaExame = require("../models/categoriaExameModel");
+const AgendamentoExame = require("../models/AgendamentoExame");
 
 function normalizarGuiaNecessaria(valor) {
   if (valor === true || valor === "true") {
@@ -203,6 +204,18 @@ async function excluirTipoExame(req, res) {
     if (!tipoExame) {
       return res.status(404).json({
         mensagem: "Tipo de exame não encontrado.",
+      });
+    }
+
+    const possuiAgendamentos = await AgendamentoExame.exists({
+      tipoExameId: id,
+      status: { $ne: "cancelado" },
+    });
+
+    if (possuiAgendamentos) {
+      return res.status(409).json({
+        mensagem:
+          "Este exame possui agendamentos vinculados e nao pode ser excluido.",
       });
     }
 

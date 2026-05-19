@@ -10,6 +10,8 @@ router.get("/", ConsultaController.index);
 
 router.patch("/:id/status", ConsultaController.updateStatus);
 
+router.patch("/:id", ConsultaController.update);
+
 router.delete("/:id", ConsultaController.delete);
 
 module.exports = router;

@@ -8,12 +8,48 @@ class ConsultaService {
 
   async list() {
     const consultas = await Consulta.find()
-      .populate("pacienteId")
+      .populate({
+        path: "pacienteId",
+        populate: {
+          path: "user",
+          select: "name nome cpf telefone email"
+        }
+      })
       .populate("medicoId")
       .populate("especialidadeId")
       .populate("guiaId");
 
     return consultas;
+  }
+
+  async update(id, dados) {
+    const consulta = await Consulta.findById(id);
+
+    if (!consulta) {
+      throw new Error("Consulta nao encontrada.");
+    }
+
+    if (dados.dataConsulta) {
+      consulta.dataConsulta = dados.dataConsulta;
+    }
+
+    if (dados.status) {
+      consulta.status = dados.status;
+    }
+
+    await consulta.save();
+
+    return Consulta.findById(id)
+      .populate({
+        path: "pacienteId",
+        populate: {
+          path: "user",
+          select: "name nome cpf telefone email"
+        }
+      })
+      .populate("medicoId")
+      .populate("especialidadeId")
+      .populate("guiaId");
   }
 
   async updateStatus(id, status) {

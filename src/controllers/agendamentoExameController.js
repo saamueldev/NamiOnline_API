@@ -5,6 +5,7 @@ const Usuario = require("../models/Usuario");
 const INICIO_FUNCIONAMENTO = "07:30";
 const FIM_FUNCIONAMENTO = "17:30";
 const MARGEM_AGENDAMENTO_MINUTOS = 30;
+const STATUS_ATIVOS = ["pendente", "confirmado"];
 
 
 function converterHorarioParaMinutos(horario) {
@@ -98,6 +99,17 @@ function filtrarHorariosPassadosDoDia(horarios, data) {
   };
 }
 
+function statusInicialDoAgendamento(tipoExame) {
+  return tipoExame.guiaNecessaria ? "pendente" : "confirmado";
+}
+
+function normalizarStatusAgendamento(status) {
+  const statusNormalizado = String(status || "").toLowerCase();
+  const statusPermitidos = ["pendente", "confirmado", "cancelado", "realizado"];
+
+  return statusPermitidos.includes(statusNormalizado) ? statusNormalizado : null;
+}
+
 async function buscarHorariosOcupados(tipoExameId, data) {
   const { inicio, fim } = criarIntervaloDaData(data);
 
@@ -108,7 +120,7 @@ async function buscarHorariosOcupados(tipoExameId, data) {
       $lte: fim,
     },
     status: {
-      $in: ["pendente", "confirmado"],
+      $in: STATUS_ATIVOS,
     },
   });
 
@@ -187,7 +199,7 @@ async function cadastrarAgendamentoExame(req, res) {
       tipoAtendimento,
       observacoes: observacoes || "",
       guiaArquivoNome: guiaArquivoNome || "",
-      status: "pendente",
+      status: statusInicialDoAgendamento(tipoExame),
     });
 
     const agendamentoPopulado = await AgendamentoExame.findById(
@@ -465,6 +477,70 @@ async function cancelarAgendamentoExame(req, res) {
   }
 }
 
+async function atualizarAgendamentoExame(req, res) {
+  try {
+    const { id } = req.params;
+    const { data, horario, status, observacoes } = req.body;
+
+    const agendamento = await AgendamentoExame.findById(id);
+
+    if (!agendamento) {
+      return res.status(404).json({
+        mensagem: "Agendamento nao encontrado.",
+      });
+    }
+
+    if (req.user.tipo !== "admin") {
+      return res.status(403).json({
+        mensagem: "Acesso negado.",
+      });
+    }
+
+    if (data) {
+      agendamento.data = new Date(`${data}T00:00:00.000Z`);
+    }
+
+    if (horario) {
+      agendamento.horario = horario;
+    }
+
+    if (status) {
+      const statusNormalizado = normalizarStatusAgendamento(status);
+
+      if (!statusNormalizado) {
+        return res.status(400).json({
+          mensagem: "Status de agendamento invalido.",
+        });
+      }
+
+      agendamento.status = statusNormalizado;
+    }
+
+    if (observacoes !== undefined) {
+      agendamento.observacoes = observacoes;
+    }
+
+    await agendamento.save();
+
+    const agendamentoPopulado = await AgendamentoExame.findById(id)
+      .populate("usuarioId", "name email cpf telefone")
+      .populate({
+        path: "tipoExameId",
+        populate: {
+          path: "categoriaExameId",
+          select: "nome descricao",
+        },
+      });
+
+    return res.status(200).json(agendamentoPopulado);
+  } catch (error) {
+    return res.status(500).json({
+      mensagem: "Erro ao atualizar agendamento.",
+      erro: error.message,
+    });
+  }
+}
+
 async function cadastrarAgendamentoExameAdmin(req, res) {
   try {
     if (req.user.tipo !== "admin") {
@@ -556,7 +632,7 @@ async function cadastrarAgendamentoExameAdmin(req, res) {
       tipoAtendimento,
       observacoes: observacoes || "",
       guiaArquivoNome: guiaArquivoNome || "",
-      status: "pendente",
+      status: statusInicialDoAgendamento(tipoExame),
     });
 
     const agendamentoPopulado = await AgendamentoExame.findById(
@@ -591,4 +667,5 @@ module.exports = {
   listarMeusAgendamentosExame,
   listarTodosAgendamentosExame,
   cancelarAgendamentoExame,
+  atualizarAgendamentoExame,
 };

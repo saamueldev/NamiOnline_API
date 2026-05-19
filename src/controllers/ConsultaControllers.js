@@ -12,7 +12,8 @@ class ConsultaController {
         especialidadeId,
         guiaId,
         dataConsulta,
-        tipo
+        tipo,
+        status
       } = req.body;
 
       let pacienteConsultaId = pacienteId;
@@ -42,7 +43,8 @@ class ConsultaController {
         especialidadeId,
         guiaId,
         dataConsulta,
-        tipo
+        tipo,
+        status
       });
 
       return res.status(201).json(consulta);
@@ -76,6 +78,24 @@ class ConsultaController {
 
       const consultaAtualizada =
         await ConsultaService.updateStatus(id, status);
+
+      return res.status(200).json(consultaAtualizada);
+
+    } catch (error) {
+      return res.status(400).json({
+        error: error.message
+      });
+    }
+  }
+
+  async update(req, res) {
+    try {
+
+      const { id } = req.params;
+      const { dataConsulta, status } = req.body;
+
+      const consultaAtualizada =
+        await ConsultaService.update(id, { dataConsulta, status });
 
       return res.status(200).json(consultaAtualizada);
 
