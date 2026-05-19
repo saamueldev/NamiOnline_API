@@ -42,3 +42,27 @@ exports.salvarTema = async (req, res) => {
     });
   }
 };
+
+// salvar notificacoes
+exports.salvarNotificacoes = async (req, res) => {
+  try {
+    const { notificacoes } = req.body;
+
+    const config = await Configuracao.findOneAndUpdate(
+      {},
+      { notificacoes },
+      { new: true, upsert: true }
+    );
+
+    res.json({
+      sucesso: true,
+      mensagem: "Notificacoes salvas com sucesso",
+      configuracoes: config,
+    });
+  } catch (error) {
+    res.status(500).json({
+      mensagem: "Erro ao salvar notificacoes",
+      erro: error.message,
+    });
+  }
+};
