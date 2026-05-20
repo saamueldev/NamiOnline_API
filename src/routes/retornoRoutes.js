@@ -3,13 +3,19 @@ const router = express.Router();
 
 const retornoController = require("../controllers/retornoController");
 
-// LISTAR retornos
+// ==============================
+// LISTAR RETORNOS
+// ==============================
 router.get("/", retornoController.listarRetornos);
 
-// CRIAR retorno
+// ==============================
+// CRIAR RETORNO
+// ==============================
 router.post("/", retornoController.criarRetorno);
 
-// DELETAR retorno
+// ==============================
+// DELETAR RETORNO
+// ==============================
 router.delete("/:id", retornoController.deletarRetorno);
 
 module.exports = router;
