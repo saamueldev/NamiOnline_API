@@ -22,6 +22,14 @@ function usuarioPodeGerenciar(req, userId) {
   return req.user?.tipo === "admin" || req.user?.id === userId;
 }
 
+function erroDeValidacao(error) {
+  return error.name === "ValidationError"
+    || error.message.includes("CPF")
+    || error.message.includes("Email")
+    || error.message.includes("Telefone")
+    || error.message.includes("senha");
+}
+
 async function create(req, res) {
   try {
     const user = await usuarioService.createUsuarios(req.body);
@@ -109,7 +117,7 @@ async function put(req, res) {
 
     return res.status(200).json(esconderSenha(user));
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    return res.status(erroDeValidacao(error) ? 400 : 500).json({ error: error.message });
   }
 }
 

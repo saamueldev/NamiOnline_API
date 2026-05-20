@@ -1,18 +1,70 @@
 const mongoose = require("mongoose");
 
-const UserSchema = new mongoose.Schema({
-  name: String,
-  cpf: String,
-  password: String,
-  data_nasc: Date,
-  sexo: String,
-  telefone: String,
-  email: String,
+function somenteNumeros(valor) {
+  return String(valor || "").replace(/\D/g, "");
+}
 
-  //Hugo - Parte para função de redefinir e recuperar senha
-  resetPasswordToken: String,
-  resetPasswordExpires: Date,
-  
+function somenteNumerosOuIndefinido(valor) {
+  const numeros = somenteNumeros(valor);
+  return numeros || undefined;
+}
+
+const UserSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+
+  cpf: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true,
+    set: somenteNumeros,
+    minlength: 11,
+    maxlength: 11,
+    match: [/^\d{11}$/, "CPF deve conter 11 numeros"],
+  },
+
+  password: {
+    type: String,
+    required: true,
+  },
+
+  data_nasc: {
+    type: Date,
+  },
+
+  sexo: {
+    type: String,
+  },
+
+  telefone: {
+    type: String,
+    trim: true,
+    set: somenteNumerosOuIndefinido,
+    minlength: 10,
+    maxlength: 11,
+    match: [/^\d{10,11}$/, "Telefone deve conter 10 ou 11 numeros"],
+  },
+
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    lowercase: true,
+    trim: true,
+  },
+
+  resetPasswordToken: {
+    type: String,
+  },
+
+  resetPasswordExpires: {
+    type: Date,
+  },
+
   tipo: {
     type: String,
     enum: ["usuario", "admin"],
