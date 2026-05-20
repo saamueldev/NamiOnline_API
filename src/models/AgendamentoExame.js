@@ -27,7 +27,8 @@ const agendamentoExameSchema = new mongoose.Schema(
 
     tipoAtendimento: {
       type: String,
-      enum: ["Particular", "Convênio"],
+      enum: ["Particular"],
+      default: "Particular",
       required: true,
     },
 
@@ -53,6 +54,5 @@ const agendamentoExameSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
-
 
 module.exports = mongoose.model("AgendamentoExame", agendamentoExameSchema);
