@@ -6,7 +6,7 @@ const INICIO_FUNCIONAMENTO = "07:30";
 const FIM_FUNCIONAMENTO = "17:30";
 const MARGEM_AGENDAMENTO_MINUTOS = 30;
 const STATUS_ATIVOS = ["pendente", "confirmado"];
-
+const TIPO_ATENDIMENTO_PADRAO = "Particular";
 
 function converterHorarioParaMinutos(horario) {
   const [horas, minutos] = horario.split(":").map(Number);
@@ -135,15 +135,13 @@ async function cadastrarAgendamentoExame(req, res) {
       tipoExameId,
       data,
       horario,
-      tipoAtendimento,
       observacoes,
       guiaArquivoNome,
     } = req.body;
 
-    if (!tipoExameId || !data || !horario || !tipoAtendimento) {
+    if (!tipoExameId || !data || !horario) {
       return res.status(400).json({
-        mensagem:
-          "Tipo de exame, data, horário e tipo de atendimento são obrigatórios.",
+        mensagem: "Tipo de exame, data e horário são obrigatórios.",
       });
     }
 
@@ -196,7 +194,7 @@ async function cadastrarAgendamentoExame(req, res) {
       tipoExameId,
       data: new Date(`${data}T00:00:00.000Z`),
       horario,
-      tipoAtendimento,
+      tipoAtendimento: TIPO_ATENDIMENTO_PADRAO,
       observacoes: observacoes || "",
       guiaArquivoNome: guiaArquivoNome || "",
       status: statusInicialDoAgendamento(tipoExame),
@@ -554,15 +552,13 @@ async function cadastrarAgendamentoExameAdmin(req, res) {
       tipoExameId,
       data,
       horario,
-      tipoAtendimento,
       observacoes,
       guiaArquivoNome,
     } = req.body;
 
-    if (!usuarioId || !tipoExameId || !data || !horario || !tipoAtendimento) {
+    if (!usuarioId || !tipoExameId || !data || !horario) {
       return res.status(400).json({
-        mensagem:
-          "Paciente, tipo de exame, data, horário e tipo de atendimento são obrigatórios.",
+        mensagem: "Paciente, tipo de exame, data e horário são obrigatórios.",
       });
     }
 
@@ -629,7 +625,7 @@ async function cadastrarAgendamentoExameAdmin(req, res) {
       tipoExameId,
       data: new Date(`${data}T00:00:00.000Z`),
       horario,
-      tipoAtendimento,
+      tipoAtendimento: TIPO_ATENDIMENTO_PADRAO,
       observacoes: observacoes || "",
       guiaArquivoNome: guiaArquivoNome || "",
       status: statusInicialDoAgendamento(tipoExame),
