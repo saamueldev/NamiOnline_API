@@ -12,6 +12,7 @@ class MedicoController {
 
   async list(req, res) {
     try {
+      
       const medicos = await MedicoService.list();
       return res.status(200).json(medicos);
     } catch (error) {
