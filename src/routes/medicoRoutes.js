@@ -1,5 +1,5 @@
 const express = require("express");
-const medicoController = require("../controllers/medicoControllers");
+const medicoController = require("../controllers/MedicoControllers");
 const requireRole = require("../middlewares/roleMiddleware");
 
 const router = express.Router();

@@ -1,4 +1,4 @@
-const MedicoService = require("../services/MedicoService");
+const MedicoService = require("../services/medicoService");
 
 class MedicoController {
   async create(req, res) {
