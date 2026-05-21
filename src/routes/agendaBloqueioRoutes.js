@@ -1,7 +1,7 @@
 const express = require("express");
 
 const agendaBloqueioController = require(
-  "../controllers/agendaBloqueioController"
+  "../controllers/AgendaBloqueioController"
 );
 
 const requireRole = require("../middlewares/roleMiddleware");
