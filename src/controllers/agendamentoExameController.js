@@ -2,8 +2,8 @@ const AgendamentoExame = require("../models/AgendamentoExame");
 const TipoExame = require("../models/tipoExameModel");
 const Usuario = require("../models/Usuario");
 
-const INICIO_FUNCIONAMENTO = "07:30";
-const FIM_FUNCIONAMENTO = "17:30";
+const INICIO_FUNCIONAMENTO = "07:00";
+const FIM_FUNCIONAMENTO = "17:00";
 const MARGEM_AGENDAMENTO_MINUTOS = 30;
 const STATUS_ATIVOS = ["pendente", "confirmado"];
 const TIPO_ATENDIMENTO_PADRAO = "Particular";
@@ -22,6 +22,7 @@ function converterMinutosParaHorario(totalMinutos) {
     "0"
   )}`;
 }
+
 
 function gerarHorariosPorPeriodo(inicio, fim, intervaloMinutos) {
   const horarios = [];
