@@ -23,6 +23,7 @@ function converterMinutosParaHorario(totalMinutos) {
   )}`;
 }
 
+
 function gerarHorariosPorPeriodo(inicio, fim, intervaloMinutos) {
   const horarios = [];
 
