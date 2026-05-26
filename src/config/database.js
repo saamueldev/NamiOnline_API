@@ -1,5 +1,7 @@
 const mongoose = require("mongoose")
 
+let connectionPromise = null
+
 async function conectarBanco() {
   try {
 
@@ -7,15 +9,24 @@ async function conectarBanco() {
       throw new Error("MONGO_URI nao configurada no arquivo .env")
     }
 
-    await mongoose.connect(process.env.MONGO_URI)
+    if (mongoose.connection.readyState === 1) {
+      return mongoose.connection
+    }
+
+    if (!connectionPromise) {
+      connectionPromise = mongoose.connect(process.env.MONGO_URI)
+    }
+
+    await connectionPromise
 
     console.log("MongoDB conectado com sucesso")
+    return mongoose.connection
 
   } catch (error) {
 
     console.error("Erro ao conectar com o MongoDB:", error.message)
-
-    process.exit(1)
+    connectionPromise = null
+    throw error
   }
 }
 
