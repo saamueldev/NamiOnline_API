@@ -19,6 +19,18 @@ function escaparRegex(valor) {
 function normalizarDadosUsuario(data) {
   const dados = { ...data };
 
+  if (dados.name === undefined && dados.nome !== undefined) {
+    dados.name = dados.nome;
+  }
+
+  if (dados.password === undefined && dados.senha !== undefined) {
+    dados.password = dados.senha;
+  }
+
+  if (dados.data_nasc === undefined) {
+    dados.data_nasc = dados.dataNascimento ?? dados.data_nascimento;
+  }
+
   if (dados.cpf !== undefined) {
     dados.cpf = somenteNumeros(dados.cpf);
   }
